@@ -43,6 +43,16 @@ penguins %>%
     coord_polar("y", start = 0)
 ```
 
+or directly
+
+```{r}
+ggplot(penguins, aes(x=factor(1), fill=species))+
+  geom_bar(width = 1) +
+  coord_polar("y")
+```
+
+
+
 flipper length
 
 just for Adelie
