@@ -1,0 +1,101 @@
+
+packages
+
+```{r}
+library(tidyverse)
+library(palmerpenguins)
+```
+
+look at df
+
+```{r}
+glimpse(penguins)
+```
+
+how many penguins of each species?
+
+```{r}
+ggplot(penguins, aes(x = species)) + geom_bar()
+```
+
+pie chart?
+
+build bar chart by hand
+
+```{r}
+penguins %>% 
+  count(species)
+```
+
+
+```{r}
+penguins %>% 
+  count(species) %>% 
+  ggplot(aes(x = "", y = n, fill = species)) + geom_bar(width = 1, stat = "identity")
+```
+
+and then wrap around
+
+```{r}
+penguins %>% 
+  count(species) %>% 
+  ggplot(aes(x = "", y = n, fill = species)) + geom_bar(width = 1, stat = "identity") + 
+    coord_polar("y", start = 0)
+```
+
+flipper length
+
+just for Adelie
+
+```{r}
+penguins %>% 
+  filter(species == "Adelie") %>% 
+  ggplot(aes(x = flipper_length_mm)) + geom_density()
+```
+
+Gentoo
+
+```{r}
+penguins %>% 
+  filter(species == "Gentoo") %>% 
+  ggplot(aes(x = flipper_length_mm)) + geom_density()
+```
+
+
+```{r}
+ggplot(penguins, aes(x = flipper_length_mm)) + geom_density()
+```
+
+by species
+
+```{r}
+ggplot(penguins, aes(x = species, y = flipper_length_mm)) + geom_boxplot()
+```
+
+superimposed histograms
+
+```{r}
+ggplot(penguins, aes(x = flipper_length_mm, fill = species)) + geom_density(alpha = 0.5)
+```
+
+
+bill length and bill depth
+
+
+```{r}
+ggplot(penguins, aes(x = bill_length_mm, y = bill_depth_mm)) + geom_point()
+```
+
+what if we look just at the gentoo?
+
+
+```{r}
+penguins %>% filter(species == "Gentoo") %>% 
+  ggplot(aes(x = bill_length_mm, y = bill_depth_mm)) + geom_point()
+```
+
+
+```{r}
+ggplot(penguins, aes(x = bill_length_mm, y = bill_depth_mm, colour = species)) + geom_point()
+```
+
