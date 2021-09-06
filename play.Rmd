@@ -1,6 +1,6 @@
 ## ... with extra penguins!
 
-![Gentoo penguins](rs35470_dsc_4869.1600x0.jpg){height=50%}
+![Gentoo penguins](rs35470_dsc_4869.1600x0.jpg){height=60%}
 
 
 [Source](https://www.antarctica.gov.au/about-antarctica/animals/penguins/gentoo-penguins/#group-1)
@@ -15,11 +15,12 @@
 
 ## The bill of a penguin
 
-![Bill or culmen depth](culmen_depth.png){height=80%}
+![Bill or culmen depth](culmen_depth.png){height=70%}
 
+[Source](https://allisonhorst.github.io/palmerpenguins/). 
 Penguins also have flippers, but you know about those, right?
 
-## Our data (of 344 penguins total)
+## Some of our data
 
 ```{r, echo=FALSE}
 penguins %>% select(species, bill_length_mm, bill_depth_mm, flipper_length_mm) %>% 
@@ -30,7 +31,7 @@ There are 344 penguins altogether.
 
 ## The species
 
-- a so-called "categorical variable" (classified)
+- a so-called "categorical variable" or "grouping variable" (classified)
 - could count how many of each:
 
 ```{r, echo=FALSE}
@@ -62,6 +63,14 @@ penguins %>%
     theme(axis.title = element_blank())
 ```
 
+## Why bar charts are better than pie charts
+
+- The human eye is better at judging heights (of bars) than angles (of pie slices)
+  - on pie chart, it is work to see that red slice is bigger that blue slice
+  - but on bar chart, clear that Adelie bar taller than Gentoo bar
+- Only time pie chart is better is for judging *fractions of whole*
+  - eg a bit less than a quarter of all the penguins are Chinstrap, and about a third are Gentoo.
+
 ## Flipper length
 
 ... is measured, not categorized ("quantitative"):
@@ -74,7 +83,7 @@ penguins %>%
 
 ## Density plot: Gentoo flipper length
 
-```{r, echo=FALSE, message=FALSE, out.height="80%"}
+```{r, echo=FALSE, message=FALSE, out.height="80%", warning=FALSE}
 penguins %>% 
   filter(species == "Gentoo") %>% 
   ggplot(aes(x = flipper_length_mm)) + geom_density()
@@ -86,12 +95,12 @@ penguins %>%
 - there is variability: the flipper lengths vary between about 200 and 230 mm
 
 - how do the other species compare?
-- idea: do density plots `overlaid` (in different colours).
+- idea: do *overlaid* density plots  (in different colours).
 
 
 ## Density plot for all three species
 
-```{r, echo=FALSE, message=FALSE, echo=FALSE, out.height="80%"}
+```{r, echo=FALSE, message=FALSE, echo=FALSE, out.height="80%", warning=FALSE}
 ggplot(penguins, aes(x = flipper_length_mm, fill = species)) + geom_density(alpha = 0.5)
 ```
 
@@ -106,7 +115,7 @@ ggplot(penguins, aes(x = flipper_length_mm, fill = species)) + geom_density(alph
 
 Bill length vs depth for Gentoo:
 
-```{r, echo=FALSE, message=FALSE, out.height="80%"}
+```{r, echo=FALSE, message=FALSE, out.height="70%", warning=FALSE}
 penguins %>% filter(species == "Gentoo") %>% 
   ggplot(aes(x = bill_length_mm, y = bill_depth_mm)) + geom_point()
 ```
@@ -120,13 +129,13 @@ penguins %>% filter(species == "Gentoo") %>%
 
 ## Bill length vs. depth for all the penguins: a big mess!
 
-```{r, message=FALSE, out.height="80%"}
+```{r, message=FALSE, out.height="70%", echo=FALSE, warning=FALSE}
 ggplot(penguins, aes(x = bill_length_mm, y = bill_depth_mm)) + geom_point()
 ```
 
 ## Bill length vs. depth with species shown
 
-```{r, message=FALSE, out.height="80%"}
+```{r, message=FALSE, out.height="70%", echo=FALSE, warning=FALSE}
 ggplot(penguins, aes(x = bill_length_mm, y = bill_depth_mm, colour = species)) + geom_point()
 ```
 
@@ -192,7 +201,7 @@ these also work for things other than penguins!
 
 ## Extra 1: Flipper length vs bill depth
 
-```{r, echo=FALSE, message=FALSE, out.height="80%"}
+```{r, echo=FALSE, message=FALSE, out.height="80%", warning=FALSE}
 ggplot(penguins, aes(x = flipper_length_mm, y = bill_depth_mm, colour = species)) + geom_point() +
   geom_vline(xintercept = 207) + geom_hline(yintercept = 18, linetype = "dashed")
 ```
@@ -206,7 +215,7 @@ ggplot(penguins, aes(x = flipper_length_mm, y = bill_depth_mm, colour = species)
 
 ## Extra 2: Flipper length vs. bill length
 
-```{r, echo=FALSE, message=FALSE, out.height="80%"}
+```{r, echo=FALSE, message=FALSE, out.height="80%", warning=FALSE}
 ggplot(penguins, aes(x = flipper_length_mm, y = bill_length_mm, colour = species)) + geom_point() +
   geom_vline(xintercept = 207) + geom_hline(yintercept = 43, linetype = "dashed")
 ```
@@ -217,3 +226,9 @@ ggplot(penguins, aes(x = flipper_length_mm, y = bill_length_mm, colour = species
 - The Adelie and Chinstrap have short flippers (left of solid line).
 - To tell them apart, look at bill length: Chinstrap longer, Adelie shorter.
 - A few Adelie and Chinstrap will get mistaken for each other.
+
+
+## more pictures
+
+see [https://oceanwide-expeditions.com/blog/meet-all-6-antarctic-penguin-species](https://oceanwide-expeditions.com/blog/meet-all-6-antarctic-penguin-species)
+
