@@ -230,5 +230,7 @@ ggplot(penguins, aes(x = flipper_length_mm, y = bill_length_mm, colour = species
 
 ## more pictures
 
-see [https://oceanwide-expeditions.com/blog/meet-all-6-antarctic-penguin-species](https://oceanwide-expeditions.com/blog/meet-all-6-antarctic-penguin-species)
+![More penguins](Screenshot_2021-09-06_12-45-47.png){height="70%"}
+
+[Source](https://oceanwide-expeditions.com/blog/meet-all-6-antarctic-penguin-species)
 
