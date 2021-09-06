@@ -1,111 +1,219 @@
+## ... with extra penguins!
 
-packages
+![Gentoo penguins](rs35470_dsc_4869.1600x0.jpg){height=50%}
 
-```{r}
-library(tidyverse)
-library(palmerpenguins)
+
+[Source](https://www.antarctica.gov.au/about-antarctica/animals/penguins/gentoo-penguins/#group-1)
+
+## What we'll be doing
+
+- Have a dataset on three different species of penguins (Adelie, Chinstrap, Gentoo)
+- Contains species, measurements on bills and flippers
+- Want to learn something about the data
+- For example, how the penguins compare
+- Or, can we tell the species apart from the measurements we have?
+
+## The bill of a penguin
+
+![Bill or culmen depth](culmen_depth.png){height=80%}
+
+Penguins also have flippers, but you know about those, right?
+
+## Our data (of 344 penguins total)
+
+```{r, echo=FALSE}
+penguins %>% select(species, bill_length_mm, bill_depth_mm, flipper_length_mm) %>% 
+  sample_n(12)
 ```
 
-look at df
+There are 344 penguins altogether.
 
-```{r}
-glimpse(penguins)
+## The species
+
+- a so-called "categorical variable" (classified)
+- could count how many of each:
+
+```{r, echo=FALSE}
+penguins %>% count(species)
 ```
 
-how many penguins of each species?
+Or make a graph.
 
-```{r}
+## Bar chart
+
+Best chart for a categorical variable is a bar chart:
+
+```{r, echo = FALSE, out.height="75%"}
 ggplot(penguins, aes(x = species)) + geom_bar()
 ```
 
-pie chart?
+- each category (species) along the bottom
+- how many up the side
+- tallest bar has most observations
 
-build bar chart by hand
-
-```{r}
-penguins %>% 
-  count(species)
-```
+## Pie chart, if you must
 
 
-```{r}
-penguins %>% 
-  count(species) %>% 
-  ggplot(aes(x = "", y = n, fill = species)) + geom_bar(width = 1, stat = "identity")
-```
-
-and then wrap around
-
-```{r}
+```{r, echo=FALSE, out.height="80%"}
 penguins %>% 
   count(species) %>% 
   ggplot(aes(x = "", y = n, fill = species)) + geom_bar(width = 1, stat = "identity") + 
-    coord_polar("y", start = 0)
+    coord_polar("y", start = 90) +
+    theme(axis.title = element_blank())
 ```
 
-or directly
+## Flipper length
 
-```{r}
-ggplot(penguins, aes(x=factor(1), fill=species))+
-  geom_bar(width = 1) +
-  coord_polar("y")
-```
+... is measured, not categorized ("quantitative"):
 
-
-
-flipper length
-
-just for Adelie
-
-```{r}
+```{r,echo=FALSE}
 penguins %>% 
-  filter(species == "Adelie") %>% 
-  ggplot(aes(x = flipper_length_mm)) + geom_density()
+  select(flipper_length_mm) %>% 
+  sample_n(8)
 ```
 
-Gentoo
+## Density plot: Gentoo flipper length
 
-```{r}
+```{r, echo=FALSE, message=FALSE, out.height="80%"}
 penguins %>% 
   filter(species == "Gentoo") %>% 
   ggplot(aes(x = flipper_length_mm)) + geom_density()
 ```
 
+## Comments
 
-```{r}
-ggplot(penguins, aes(x = flipper_length_mm)) + geom_density()
-```
+- most of the Gentoo penguins have flipper length near 215 mm
+- there is variability: the flipper lengths vary between about 200 and 230 mm
 
-by species
+- how do the other species compare?
+- idea: do density plots `overlaid` (in different colours).
 
-```{r}
-ggplot(penguins, aes(x = species, y = flipper_length_mm)) + geom_boxplot()
-```
 
-superimposed histograms
+## Density plot for all three species
 
-```{r}
+```{r, echo=FALSE, message=FALSE, echo=FALSE, out.height="80%"}
 ggplot(penguins, aes(x = flipper_length_mm, fill = species)) + geom_density(alpha = 0.5)
 ```
 
+## Comments
 
-bill length and bill depth
+- Gentoo penguins have longer flippers than others
+- Chinstrap slightly longer than Adelie, but a lot of overlap
+- if all you knew was flipper length, you would do reasonably well at distinguishing Gentoo from others.
+- but even then, would not be perfect (eg. what if flipper length was 205 mm?)
 
+## Two measured variables: scatterplot
 
-```{r}
-ggplot(penguins, aes(x = bill_length_mm, y = bill_depth_mm)) + geom_point()
-```
+Bill length vs depth for Gentoo:
 
-what if we look just at the gentoo?
-
-
-```{r}
+```{r, echo=FALSE, message=FALSE, out.height="80%"}
 penguins %>% filter(species == "Gentoo") %>% 
   ggplot(aes(x = bill_length_mm, y = bill_depth_mm)) + geom_point()
 ```
 
+## Comments
 
-```{r}
+- Each dot is one (Gentoo) penguin
+- for example, at the bottom left is a penguin with bill length 41 mm and bill depth 13.7 mm
+- and at top left, bill length 44 and bill depth 17.3
+- usually, a Gentoo penguin with greater bill length also has greater bill depth, but not always
+
+## Bill length vs. depth for all the penguins: a big mess!
+
+```{r, message=FALSE, out.height="80%"}
+ggplot(penguins, aes(x = bill_length_mm, y = bill_depth_mm)) + geom_point()
+```
+
+## Bill length vs. depth with species shown
+
+```{r, message=FALSE, out.height="80%"}
 ggplot(penguins, aes(x = bill_length_mm, y = bill_depth_mm, colour = species)) + geom_point()
 ```
 
+## comments
+
+- the species are fairly distinct, eg Adelie have small bill length and large bill depth
+- we know that Gentoo have large flipper length, so that plus a small bill depth identifies them
+- can we do better? I ran a "classification tree".
+
+## Classification tree
+
+```{r, echo=FALSE}
+penguins.1 <- rpart::rpart(species ~ flipper_length_mm + bill_length_mm + bill_depth_mm, data = penguins)
+rattle::fancyRpartPlot(penguins.1, type = 5)
+# plot(penguins.1, compress = TRUE, uniform = TRUE, margin = 0.1)
+# text(penguins.1)
+```
+
+
+## Examples:
+
+```{r, echo=FALSE}
+rows <- c(50, 202)
+penguins %>% 
+  select(ends_with("_mm")) %>% 
+  slice(rows) %>% mutate(penguin = rows, .before = bill_length_mm)
+```
+
+- Penguin 50: 
+  - compare flipper length with 207. Less.
+  - so compare bill length with 43. Less again.
+  - so it's Adelie.
+- Penguin 202:
+  - compare flipper length with 207. Greater.
+  - compare bill depth with 18. Less.
+  - so it's Gentoo.
+
+## Were we right?
+
+```{r, echo=FALSE}
+penguins %>% 
+  slice(rows) %>% 
+  mutate(penguin = rows) %>% 
+  select(penguin, species)
+```
+
+we were!
+
+## to summarize
+
+- variables
+  - categorical: something you classify
+  - quantitative: something you measure
+- graphs
+  - bar chart (*not* pie chart) for 1 categorical
+  - density plot for 1 quantitative
+  - density plots layered to compare such by groups
+  - scatterplot for 2 quantitative
+  - scatterplot with colours to include groups
+- classification tree to understand how groups differ on quantitative variables
+
+these also work for things other than penguins!
+
+## Extra 1: Flipper length vs bill depth
+
+```{r, echo=FALSE, message=FALSE, out.height="80%"}
+ggplot(penguins, aes(x = flipper_length_mm, y = bill_depth_mm, colour = species)) + geom_point() +
+  geom_vline(xintercept = 207) + geom_hline(yintercept = 18, linetype = "dashed")
+```
+
+## Comments
+
+- Look to right of solid line.
+- There are a few Chinstraps with long flippers (top right).
+- These are distinguished from Gentoos by bill depth: above dashed line is Chinstrap, below is Gentoo.
+- A few  Adelie (red) will be guessed wrong.
+
+## Extra 2: Flipper length vs. bill length
+
+```{r, echo=FALSE, message=FALSE, out.height="80%"}
+ggplot(penguins, aes(x = flipper_length_mm, y = bill_length_mm, colour = species)) + geom_point() +
+  geom_vline(xintercept = 207) + geom_hline(yintercept = 43, linetype = "dashed")
+```
+
+## Comments
+
+- Look to left of solid line.
+- The Adelie and Chinstrap have short flippers (left of solid line).
+- To tell them apart, look at bill length: Chinstrap longer, Adelie shorter.
+- A few Adelie and Chinstrap will get mistaken for each other.
