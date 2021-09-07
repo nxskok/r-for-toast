@@ -45,7 +45,7 @@ Or make a graph.
 Best chart for a categorical variable is a bar chart:
 
 ```{r, echo = FALSE, out.height="75%"}
-ggplot(penguins, aes(x = species)) + geom_bar()
+ggplot(penguins, aes(x = species, fill = species)) + geom_bar() + guides(fill = "none")
 ```
 
 - each category (species) along the bottom
@@ -86,7 +86,7 @@ penguins %>%
 ```{r, echo=FALSE, message=FALSE, out.height="80%", warning=FALSE}
 penguins %>% 
   filter(species == "Gentoo") %>% 
-  ggplot(aes(x = flipper_length_mm)) + geom_density()
+  ggplot(aes(x = flipper_length_mm)) + geom_density(fill = "lightblue")
 ```
 
 ## Comments
@@ -117,7 +117,7 @@ Bill length vs depth for Gentoo:
 
 ```{r, echo=FALSE, message=FALSE, out.height="70%", warning=FALSE}
 penguins %>% filter(species == "Gentoo") %>% 
-  ggplot(aes(x = bill_length_mm, y = bill_depth_mm)) + geom_point()
+  ggplot(aes(x = bill_length_mm, y = bill_depth_mm)) + geom_point(colour = "blue")
 ```
 
 ## Comments
@@ -184,6 +184,13 @@ penguins %>%
 
 we were!
 
+## more pictures
+
+![More penguins](Screenshot_2021-09-06_12-45-47.png){height="70%"}
+
+[Source](https://oceanwide-expeditions.com/blog/meet-all-6-antarctic-penguin-species)
+
+
 ## to summarize
 
 - variables
@@ -228,9 +235,6 @@ ggplot(penguins, aes(x = flipper_length_mm, y = bill_length_mm, colour = species
 - A few Adelie and Chinstrap will get mistaken for each other.
 
 
-## more pictures
-
-![More penguins](Screenshot_2021-09-06_12-45-47.png){height="70%"}
 
 [Source](https://oceanwide-expeditions.com/blog/meet-all-6-antarctic-penguin-species)
 
